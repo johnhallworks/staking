@@ -1,2 +1,3 @@
 .idea
 duel_arena.egg-info
+*.pyc
