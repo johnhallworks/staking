@@ -6,11 +6,11 @@ class DoublerStaker(AbstractStaker):
     default_wage_decimal = None
     current_loss = 0
 
-    def __init__(self, gp, default_wage_decimal=.001):
+    def __init__(self, gp, default_wage_decimal=.0001):
         """Initializes gp and default_wager."""
         self.default_wage_decimal = default_wage_decimal
         super(DoublerStaker, self).__init__(gp)
-        self.current_loss = self.default_wager()
+        self.current_loss = 0
 
     def accept_stake(self, gp):
         """Returns True if the staker will accept."""
