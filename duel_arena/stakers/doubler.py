@@ -6,7 +6,7 @@ class DoublerStaker(AbstractStaker):
     default_wage_decimal = None
     current_loss = 0
 
-    def __init__(self, gp, default_wage_decimal=.0001):
+    def __init__(self, gp, default_wage_decimal=.00001):
         """Initializes gp and default_wager."""
         self.default_wage_decimal = default_wage_decimal
         super(DoublerStaker, self).__init__(gp)

@@ -1,3 +1,4 @@
+import signal
 from random import randint
 
 from stakers.exceptions import NotEnoughGpException
@@ -7,15 +8,27 @@ class DuelArenaSimulator(object):
     stakers = None
     max_stakes = None
 
-    def __init__(self, stakers, max_stakes=10000):
+    interrupted = False
+    default_int_handler = None
+
+    def __init__(self, stakers, max_stakes=1000000):
         """Initializes the simulation."""
         self.stakers = stakers
         self.max_stakes = max_stakes
 
+        self.interrupted = False
+        self.default_int_handler = signal.signal(signal.SIGINT, self.end_simulation)
+
+    def end_simulation(self, signum, frame):
+        self.interrupted = True
+        signal.signal(signal.SIGINT, self.default_int_handler)
+
     def simulate(self):
         """Simulates duel arena staking."""
+        self.interrupted = False
         stakes = 0
-        while stakes < self.max_stakes:
+
+        while stakes < self.max_stakes and not self.interrupted:
             for proposing_staker in self.stakers:
                 accepting_staker = self.choose_opponent(proposing_staker, self.stakers)
                 self.attempt_stake(proposing_staker, accepting_staker)

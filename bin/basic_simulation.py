@@ -19,7 +19,7 @@ def print_basic_results(completed_sim):
 if __name__ == "__main__":
     stakers = []
     starting_gp = 1000000
-    for i in range(10):
+    for i in range(1):
         stakers.append(FibonacciStaker(starting_gp))
         stakers.append(IndifferentStaker(starting_gp))
         stakers.append(DoublerStaker(starting_gp))
