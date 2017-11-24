@@ -1,0 +1,3 @@
+
+class NotEnoughGpException(Exception):
+    pass
