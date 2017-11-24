@@ -23,4 +23,3 @@ if __name__ == "__main__":
     simulator = DuelArenaSimulator(stakers)
     simulator.simulate()
     print(simulator.results())
-    print(print_basic_results(simulator))
