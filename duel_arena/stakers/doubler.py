@@ -12,19 +12,21 @@ class DoublerStaker(AbstractStaker):
         super(DoublerStaker, self).__init__(gp)
         self.current_loss = 0
 
-    def accept_stake(self, gp):
-        """Returns True if the staker will accept."""
-        if self.is_first_duel or self.won_last_duel:
-            return self.default_wager() == gp
-        else:
-            return self.double_wager() == gp
-
     def propose_stake(self):
         """Proposes gp for a stake."""
         if self.is_first_duel or self.won_last_duel:
-            return self.default_wager()
+            wager = self.default_wager()
         else:
-            return self.double_wager()
+            wager = self.double_wager()
+        return self._propose_stake(wager)
+
+    def accept_stake(self, gp):
+        """Returns True if the staker will accept."""
+        if self.is_first_duel or self.won_last_duel:
+            accepted = self.default_wager() == gp
+        else:
+            accepted = self.double_wager() == gp
+        return self._accept_stake(gp, accepted)
 
     def lose_duel(self, staked_gp):
         self.current_loss = staked_gp
@@ -32,14 +34,8 @@ class DoublerStaker(AbstractStaker):
 
     def default_wager(self):
         """Default wager for this staker"""
-        wager = int(self.starting_gp / 100)
-        if wager > self.current_gp:
-            raise NotEnoughGpException("Double staker doesnt have enough gp for default wager")
-        return wager
+        return self.starting_gp * self.default_wage_decimal
 
     def double_wager(self):
         """Doubles the total loss in the the simulation."""
-        double_current_loss = self.current_loss * 2
-        if double_current_loss > self.current_gp:
-            raise NotEnoughGpException("Double staker can no longer double.")
-        return double_current_loss
+        return self.current_loss * 2

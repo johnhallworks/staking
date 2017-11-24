@@ -5,32 +5,25 @@ from stakers.exceptions import NotEnoughGpException
 
 class DuelArenaSimulator(object):
     stakers = None
-    stakes = 0
     max_stakes = None
 
-    def __init__(self, stakers, max_stakes=None):
+    def __init__(self, stakers, max_stakes=10000):
+        """Initializes the simulation."""
         self.stakers = stakers
-        self.stakes = 0
         self.max_stakes = max_stakes
 
     def simulate(self):
         """Simulates duel arena staking."""
-        someone_staked = True
-        while someone_staked and (self.max_stakes is None
-                                  or self.stakes < self.max_stakes):
-            someone_staked = False
+        stakes = 0
+        while stakes < self.max_stakes:
             for proposing_staker in self.stakers:
                 accepting_staker = self.choose_opponent(proposing_staker, self.stakers)
-                stake_happened = self.attempt_stake(proposing_staker, accepting_staker)
-                if stake_happened:
-                    someone_staked = True
-            if someone_staked:
-                self.stakes += 1
-        if not someone_staked:
-            print("No one was left to stake")
+                self.attempt_stake(proposing_staker, accepting_staker)
+            stakes += 1
 
     @staticmethod
     def choose_opponent(proposing_staker, stakers):
+        """Chooses a random opponent."""
         accepting_staker = stakers[randint(0, len(stakers) - 1)]
         while proposing_staker == accepting_staker:
             accepting_staker = stakers[randint(0, len(stakers) - 1)]
@@ -56,10 +49,15 @@ class DuelArenaSimulator(object):
 
     @staticmethod
     def handle_duel_results(winner, loser, gp):
+        """Distributes winnings and losses."""
         winner.win_duel(gp)
         loser.lose_duel(gp)
 
+    def reset_variables(self, stakers=None, max_stakes=None):
+        self.__init__(stakers, max_stakes)
+
     def results(self):
+        """Gives some basic results by staker type."""
         results = {}
         for staker in self.stakers:
             staker_type = staker.__class__.__name__

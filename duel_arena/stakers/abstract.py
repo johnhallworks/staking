@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from uuid import uuid4
 
+from duel_arena.stakers.exceptions import NotEnoughGpException
+
 
 class AbstractStaker(object):
     __metaclass__ = ABCMeta
@@ -30,7 +32,8 @@ class AbstractStaker(object):
     @current_gp.setter
     def current_gp(self, gp):
         if gp < 0:
-            raise ValueError("current GP cannot be negative.")
+            raise ValueError("Oops, {0} attempted to stake more money than they have."
+                             .format(self.__str__()))
         self._current_gp = gp
 
     @property
@@ -52,6 +55,16 @@ class AbstractStaker(object):
     @abstractmethod
     def propose_stake(self):
         raise NotImplementedError("Method must be implemented in inheriting class")
+
+    def _propose_stake(self, gp):
+        if self.current_gp <=0:
+            raise NotEnoughGpException("{0} has no Gp".format(self.__str__()))
+        return min(gp, self.current_gp)
+
+    def _accept_stake(self, gp, accepted):
+        if self.current_gp <=0:
+            raise NotEnoughGpException("{0} has no Gp".format(self.__str__()))
+        return accepted and gp <= self.current_gp
 
     @abstractmethod
     def accept_stake(self, gp):

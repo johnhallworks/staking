@@ -1,5 +1,8 @@
+from random import shuffle
+
 from duel_arena.simulator import DuelArenaSimulator
 from duel_arena.stakers.doubler import DoublerStaker
+from duel_arena.stakers.fibonacci import FibonacciStaker
 from duel_arena.stakers.indifferent import IndifferentStaker
 
 
@@ -16,10 +19,11 @@ def print_basic_results(completed_sim):
 if __name__ == "__main__":
     stakers = []
     starting_gp = 1000000
-    for i in range(100):
+    for i in range(10):
+        stakers.append(FibonacciStaker(starting_gp))
         stakers.append(IndifferentStaker(starting_gp))
         stakers.append(DoublerStaker(starting_gp))
+    shuffle(stakers)
     simulator = DuelArenaSimulator(stakers)
     simulator.simulate()
-    print(simulator.results())
     print_basic_results(simulator)

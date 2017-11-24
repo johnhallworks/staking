@@ -11,17 +11,13 @@ class IndifferentStaker(AbstractStaker):
         self._indifference = indifference
         super(IndifferentStaker, self).__init__(gp)
 
-    def accept_stake(self, gp):
-        """Accepts if the proposed gp is below an indifference threshold."""
-        if self.current_gp <=0:
-            raise NotEnoughGpException("Indifferent Staker has no Gp")
-        return gp < self.indifference_threshold()
-
     def propose_stake(self):
         """Willing to propose any stake within the indifference threshold."""
-        if self.current_gp <= 0:
-            raise NotEnoughGpException("Indifferent Staker has no Gp")
-        return randint(1, self.indifference_threshold())
+        return self._propose_stake(randint(0, self.indifference_threshold()))
+
+    def accept_stake(self, gp):
+        """Accepts if the proposed gp is below an indifference threshold."""
+        return self._accept_stake(gp, gp < self.indifference_threshold())
 
     def indifference_threshold(self):
         threshold = int(self.current_gp * self._indifference)

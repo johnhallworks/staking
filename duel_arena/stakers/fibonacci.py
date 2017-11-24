@@ -1,5 +1,3 @@
-from duel_arena.stakers.exceptions import NotEnoughGpException
-
 from duel_arena.stakers.abstract import AbstractStaker
 
 
@@ -18,23 +16,16 @@ class FibonacciStaker(AbstractStaker):
                 FibonacciStaker.fibonacci(i - 2))
 
     def fib_stake(self):
-        return (self.current_gp *
+        return int(self.current_gp *
                 self._multiplier *
                 self.fibonacci(self._fib_num))
 
     def propose_stake(self):
-        fib_stake = self.fib_stake()
-        if fib_stake > self.current_gp:
-            raise NotEnoughGpException("Fib staker cant fib stake")
-        return fib_stake
+        return self._propose_stake(self.fib_stake())
 
     def accept_stake(self, gp):
         fib_stake = self.fib_stake()
-        if gp == fib_stake:
-            if fib_stake > self.current_gp:
-                raise NotEnoughGpException("Fib staker cant fib stake")
-            return True
-        return False
+        return self._accept_stake(gp, fib_stake == gp)
 
     def win_duel(self, staked_gp):
         if self._fib_num > 1:
