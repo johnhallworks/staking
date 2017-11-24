@@ -1,7 +1,6 @@
-
 from duel_arena.simulator import DuelArenaSimulator
-from duel_arena.stakers.indifferent import IndifferentStaker
 from duel_arena.stakers.doubler import DoublerStaker
+from duel_arena.stakers.indifferent import IndifferentStaker
 
 
 def print_basic_results(completed_sim):
@@ -23,3 +22,4 @@ if __name__ == "__main__":
     simulator = DuelArenaSimulator(stakers)
     simulator.simulate()
     print(simulator.results())
+    print_basic_results(simulator)
