@@ -3,7 +3,7 @@ from duel_arena.stakers.abstract import AbstractStaker
 
 class FibonacciStaker(AbstractStaker):
 
-    def __init__(self, starting_gp, multiplier=.00001):
+    def __init__(self, starting_gp, multiplier=.000001):
         self._fib_num = 1
         self._multiplier = multiplier
         super(FibonacciStaker, self).__init__(starting_gp)
@@ -21,7 +21,7 @@ class FibonacciStaker(AbstractStaker):
         return number
 
     def fib_stake(self):
-        return int(self.current_gp *
+        return int(self.starting_gp *
                    self._multiplier *
                    self.fibonacci(self._fib_num))
 

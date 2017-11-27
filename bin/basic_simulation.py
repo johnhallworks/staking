@@ -24,6 +24,7 @@ if __name__ == "__main__":
         stakers.append(IndifferentStaker(starting_gp))
         stakers.append(DoublerStaker(starting_gp))
     shuffle(stakers)
+
     simulator = DuelArenaSimulator(stakers)
     simulator.simulate()
     print_basic_results(simulator)

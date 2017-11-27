@@ -11,7 +11,7 @@ class DuelArenaSimulator(object):
     interrupted = False
     default_int_handler = None
 
-    def __init__(self, stakers, max_stakes=1000000):
+    def __init__(self, stakers, max_stakes=100000):
         """Initializes the simulation."""
         self.stakers = stakers
         self.max_stakes = max_stakes
@@ -20,6 +20,7 @@ class DuelArenaSimulator(object):
         self.default_int_handler = signal.signal(signal.SIGINT, self.end_simulation)
 
     def end_simulation(self, signum, frame):
+        print("Simulation ended by sigint")
         self.interrupted = True
         signal.signal(signal.SIGINT, self.default_int_handler)
 
@@ -28,10 +29,11 @@ class DuelArenaSimulator(object):
         self.interrupted = False
         stakes = 0
 
-        while stakes < self.max_stakes and not self.interrupted:
+        while stakes < self.max_stakes and not self.interrupted and self.stakers_can_stake():
             for proposing_staker in self.stakers:
                 accepting_staker = self.choose_opponent(proposing_staker, self.stakers)
-                self.attempt_stake(proposing_staker, accepting_staker)
+                if proposing_staker.current_gp != 0 and accepting_staker.current_gp != 0:
+                    self.attempt_stake(proposing_staker, accepting_staker)
             stakes += 1
 
     @staticmethod
@@ -68,6 +70,9 @@ class DuelArenaSimulator(object):
 
     def reset_variables(self, stakers=None, max_stakes=None):
         self.__init__(stakers, max_stakes)
+
+    def stakers_can_stake(self):
+        return len([staker for staker in self.stakers if staker.current_gp > 0]) > 0
 
     def results(self):
         """Gives some basic results by staker type."""
